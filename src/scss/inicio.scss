@@ -1,0 +1,444 @@
+.inicio {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  // HEADER
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 5%;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+  }
+
+  &__logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__logo-img {
+    height: 135px;
+    width: auto;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  &__logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+  }
+
+  &__nav {
+    a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: color 0.2s;
+      &:hover {
+        color: #0f172a;
+      }
+    }
+  }
+
+  // HERO
+  &__hero {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 5%;
+    gap: 2rem;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  }
+
+  &__contenido {
+    flex: 1 1 45%;
+    max-width: 600px;
+  }
+
+  &__titulo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    color: #0f172a;
+    span {
+      color: #0284c7;
+      border-bottom: 4px solid #0284c7;
+      display: inline-block;
+    }
+  }
+
+  &__descripcion {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #475569;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+  }
+
+  // CONTENEDOR DE BOTONES
+  &__botones {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  // BOTÓN BASE
+  &__boton {
+    border: none;
+    padding: 0.9rem 2.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // BOTÓN COTIZAR (oscuro)
+  &__boton--cotizar {
+    background: #0f172a;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    &:hover {
+      background: #1e293b;
+      transform: scale(1.02);
+    }
+  }
+
+  // BOTÓN RESERVAR (celeste)
+  &__boton--reserva {
+    background: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+    &:hover {
+      background: #0ea5e9;
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+    }
+  }
+
+  &__imagen {
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+  }
+
+  &__portada {
+    max-width: 100%;
+    max-height: 350px;
+    width: auto;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
+  }
+
+  // SECCIÓN SERVICIOS
+  &__servicios {
+    padding: 4rem 5%;
+    background: #ffffff;
+    text-align: center;
+  }
+
+  &__servicios-titulo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 3rem;
+    position: relative;
+    &::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: #38bdf8;
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
+    }
+  }
+
+  &__servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__servicio-card {
+    background: #f8fafc;
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15);
+      border-color: #bae6fd;
+    }
+  }
+
+  &__servicio-imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    margin: -2rem -1.5rem 1rem -1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  &__servicio-titulo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #38bdf8;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    align-self: flex-start;
+  }
+
+  &__servicio-descripcion {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0;
+    text-align: left;
+  }
+
+  // SECCIÓN DESTAPE 24/7
+  &__destape {
+    padding: 3rem 5%;
+    background: #f0f9ff;
+    text-align: center;
+    border-top: 1px solid #bae6fd;
+    border-bottom: 1px solid #bae6fd;
+  }
+
+  &__destape-titulo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1.5rem;
+  }
+
+  &__destape-descripcion {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #334155;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+  }
+
+  // SECCIÓN NOSOTROS
+  &__nosotros {
+    padding: 4rem 5%;
+    background: #ffffff;
+  }
+
+  &__nosotros-contenedor {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__nosotros-imagen {
+    flex: 1 1 40%;
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      display: block;
+      object-fit: cover;
+      border: 2px solid #bae6fd;
+    }
+  }
+
+  &__nosotros-texto {
+    flex: 1 1 60%;
+  }
+
+  &__nosotros-titulo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1.5rem;
+    position: relative;
+    &::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: #38bdf8;
+      margin-top: 0.5rem;
+      border-radius: 2px;
+    }
+  }
+
+  &__nosotros-descripcion {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 1.2rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // BOTÓN WHATSAPP FLOTANTE (NUEVO)
+  &__whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25d366;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 1000;
+    text-decoration: none;
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    }
+    svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+    }
+  }
+
+  // FOOTER
+  &__footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+
+  // RESPONSIVE
+  @media (max-width: 768px) {
+    &__hero {
+      flex-direction: column;
+      text-align: center;
+      padding: 1rem 1rem;
+    }
+    &__contenido {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+    &__titulo {
+      font-size: 2.8rem;
+      span {
+        border-bottom-width: 3px;
+      }
+    }
+    &__descripcion {
+      font-size: 1.1rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    &__botones {
+      justify-content: center;
+    }
+    &__imagen {
+      flex: 1 1 auto;
+      margin-top: 1rem;
+    }
+    &__portada {
+      max-height: 250px;
+    }
+    &__header {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+    }
+    &__nav a {
+      margin: 0 1rem;
+    }
+    &__servicios-grid {
+      grid-template-columns: 1fr;
+    }
+    &__servicio-card {
+      padding: 1.5rem;
+    }
+    &__servicio-imagen {
+      height: 150px;
+      margin: -1.5rem -1.5rem 1rem -1.5rem;
+    }
+    &__logo-img {
+      height: 105px;
+    }
+    &__logo-text {
+      font-size: 1.4rem;
+    }
+    &__destape-titulo {
+      font-size: 2rem;
+    }
+    &__destape-descripcion {
+      font-size: 1rem;
+    }
+    &__nosotros-contenedor {
+      flex-direction: column;
+      gap: 2rem;
+    }
+    &__nosotros-imagen {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+    &__nosotros-titulo {
+      font-size: 2rem;
+      text-align: center;
+      &::after {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    &__nosotros-descripcion {
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    // BOTÓN WHATSAPP EN MÓVIL (NUEVO)
+    &__whatsapp {
+      width: 50px;
+      height: 50px;
+      bottom: 15px;
+      right: 15px;
+      svg {
+        width: 26px;
+        height: 26px;
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node / frontend
+node_modules/
+dist/
+*.log
+npm-debug.log*
+
+# Python / Django
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+parts/
+*.egg-info/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+/backend/media/        # ← ignora toda la media subida; quítalo si quieres versionar evidencias de ejemplo
+/backend/staticfiles/
+
+# Entorno
+.env
+.env.*
+!.env.example
+
+# SO / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+/backend/media/

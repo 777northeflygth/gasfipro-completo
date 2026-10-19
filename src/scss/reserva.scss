@@ -1,0 +1,311 @@
+.reserva {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 5%;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+  }
+
+  &__logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+  }
+
+  &__nav {
+    a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: color 0.2s;
+      &:hover {
+        color: #0f172a;
+      }
+    }
+  }
+
+  &__main {
+    flex: 1;
+    padding: 3rem 5%;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  &__titulo {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    &::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: #38bdf8;
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
+    }
+  }
+
+  &__subtitulo {
+    font-size: 1.1rem;
+    color: #475569;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  // --- Pantalla de éxito ---
+  &__exito {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    h2 {
+      font-size: 2rem;
+      color: #16a34a;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1.1rem;
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // --- Número de boleta ---
+  &__boleta {
+    background: #1e293b;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
+    display: inline-block;
+    margin: 1.5rem auto;
+    border: 2px dashed #38bdf8;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    user-select: all;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // --- Etiqueta de boleta ---
+  &__boleta-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0.5rem;
+  }
+
+  // --- Fecha de solicitud (NUEVO) ---
+  &__fecha-solicitud {
+    margin-top: 0.8rem;
+    font-size: 1rem;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #e2e8f0;
+    strong {
+      font-weight: 600;
+      color: #0f172a;
+      margin-right: 0.5rem;
+    }
+  }
+
+  // --- Formulario ---
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: #f8fafc;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+    input,
+    select,
+    textarea {
+      padding: 0.7rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      &:focus {
+        outline: none;
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+      }
+    }
+    textarea {
+      resize: vertical;
+    }
+    input[type="file"] {
+      padding: 0.5rem;
+      background: #ffffff;
+    }
+  }
+
+  // --- Información del archivo adjunto ---
+  &__archivo-info {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #334155;
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-top: 0.3rem;
+    align-items: center;
+  }
+
+  &__archivo-tamano {
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+
+  // --- Previsualización de evidencia ---
+  &__preview {
+    margin-top: 0.8rem;
+    img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      object-fit: contain;
+    }
+  }
+
+  // --- Mensaje de error ---
+  &__error {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: 1px solid #fca5a5;
+    margin-top: -0.5rem;
+  }
+
+  // --- Botón principal ---
+  &__boton {
+    background: #38bdf8;
+    color: #ffffff;
+    border: none;
+    padding: 0.9rem 2.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+    &:hover {
+      background: #0ea5e9;
+      transform: scale(1.02);
+    }
+    &:active {
+      transform: scale(0.98);
+    }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  // --- Footer ---
+  &__footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+
+  // --- RESPONSIVE ---
+  @media (max-width: 768px) {
+    &__header {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+    }
+    &__nav a {
+      margin: 0 1rem;
+      font-size: 0.95rem;
+    }
+    &__titulo {
+      font-size: 2.2rem;
+    }
+    &__form {
+      padding: 1.5rem;
+    }
+    &__exito {
+      padding: 2rem 1.5rem;
+      h2 {
+        font-size: 1.6rem;
+      }
+    }
+    &__boleta {
+      font-size: 1.5rem;
+      padding: 1rem 1.5rem;
+      letter-spacing: 1px;
+      word-break: break-all;
+    }
+    &__boleta-label {
+      font-size: 0.75rem;
+    }
+    &__fecha-solicitud {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+    &__archivo-info {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+    &__preview img {
+      max-height: 150px;
+    }
+  }
+}

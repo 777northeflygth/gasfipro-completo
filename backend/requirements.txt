@@ -1,0 +1,23 @@
+# ============================================================
+#  GASFIPRO BACKEND - DEPENDENCIAS
+# ============================================================
+
+# --- Django y REST Framework ---
+Django==4.2.7
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
+django-cors-headers==4.3.1
+
+# --- Manejo de archivos (evidencia) ---
+Pillow==10.1.0
+
+# --- Base de datos (opcional) ---
+# Si usas PostgreSQL en producción, descomenta:
+# psycopg2-binary==2.9.9
+
+# --- Variables de entorno ---
+python-dotenv==1.0.0
+
+# --- Utilidades adicionales (opcional) ---
+# django-filter==23.3
+# django-debug-toolbar==4.1.0
