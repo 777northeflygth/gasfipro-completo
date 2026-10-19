@@ -236,7 +236,6 @@ export const useAdmin = () => {
       editEarnings,
       editMotivo,
       closeEditModal,
-      updateBookingItem,
     ],
   );
 
