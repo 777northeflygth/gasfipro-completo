@@ -1,31 +1,39 @@
 // src/front-jsx/Admin.jsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
-import '../scss/admin.scss';
-import { useAdmin, formatCurrency, safeFormatDate, statusLabels } from '../jsx/admin';
-import CalendarioCompleto from './CalendarioCompleto';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { format, parseISO } from "date-fns";
+import "../scss/admin.scss";
+import {
+  useAdmin,
+  formatCurrency,
+  safeFormatDate,
+  statusLabels,
+} from "../jsx/admin";
+import CalendarioCompleto from "./CalendarioCompleto";
 
 const Sidebar = ({ activeTab, onTabChange }) => (
   <aside className="admin__sidebar">
-    <nav className="admin__sidebar-nav" role="navigation" aria-label="Panel de administración">
+    <nav
+      className="admin__sidebar-nav"
+      role="navigation"
+      aria-label="Panel de administración"
+    >
       {[
-        { id: 'dashboard', label: '📊 Dashboard' },
-        { id: 'bookings', label: '📋 Reservas' },
-        { id: 'earnings', label: '💰 Ganancias' },
-        { id: 'clients', label: '👤 Clientes' },
-        { id: 'solicitudes', label: '📋 Solicitudes' },
-        { id: 'calendario', label: '📅 Calendario' },
-        { id: 'settings', label: '⚙️ Configuración' },
+        { id: "dashboard", label: "📊 Dashboard" },
+        { id: "bookings", label: "📋 Reservas" },
+        { id: "earnings", label: "💰 Ganancias" },
+        { id: "clients", label: "👤 Clientes" },
+        { id: "solicitudes", label: "📋 Solicitudes" },
+        { id: "calendario", label: "📅 Calendario" },
+        { id: "settings", label: "⚙️ Configuración" },
       ].map(({ id, label }) => (
         <button
           key={id}
-          className={`admin__sidebar-btn ${activeTab === id ? 'active' : ''}`}
+          className={`admin__sidebar-btn ${activeTab === id ? "active" : ""}`}
           onClick={() => onTabChange(id)}
-          aria-current={activeTab === id ? 'page' : undefined}
+          aria-current={activeTab === id ? "page" : undefined}
         >
           {label}
         </button>
@@ -36,7 +44,7 @@ const Sidebar = ({ activeTab, onTabChange }) => (
 
 function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const {
     bookings,
@@ -59,7 +67,6 @@ function Admin() {
     editTime,
     setEditTime,
     editStatus,
-    setEditStatus,
     editEarnings,
     setEditEarnings,
     editMotivo,
@@ -79,7 +86,7 @@ function Admin() {
     tileContent,
   } = useAdmin();
 
-  const handleLogout = () => navigate('/login');
+  const handleLogout = () => navigate("/login");
 
   // ---- Funciones de renderizado ----
 
@@ -107,15 +114,21 @@ function Admin() {
       </div>
       <div className="admin__metric-card admin__metric-card--week">
         <h4 className="admin__metric-title">Ganancias del día</h4>
-        <p className="admin__metric-value">{formatCurrency(earningsData.todayEarnings)}</p>
+        <p className="admin__metric-value">
+          {formatCurrency(earningsData.todayEarnings)}
+        </p>
       </div>
       <div className="admin__metric-card admin__metric-card--month">
         <h4 className="admin__metric-title">Ganancias semana</h4>
-        <p className="admin__metric-value">{formatCurrency(earningsData.weekEarnings)}</p>
+        <p className="admin__metric-value">
+          {formatCurrency(earningsData.weekEarnings)}
+        </p>
       </div>
       <div className="admin__metric-card admin__metric-card--month">
         <h4 className="admin__metric-title">Ganancias mes</h4>
-        <p className="admin__metric-value">{formatCurrency(earningsData.monthEarnings)}</p>
+        <p className="admin__metric-value">
+          {formatCurrency(earningsData.monthEarnings)}
+        </p>
       </div>
     </section>
   );
@@ -147,32 +160,34 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {bookingList.map(b => (
+              {bookingList.map((b) => (
                 <tr key={b.id}>
                   <td>{b.rut}</td>
                   <td>{b.nombre}</td>
                   <td>{b.apellido}</td>
                   <td>{b.service}</td>
-                  <td>{safeFormatDate(b.created_at, 'dd/MM/yyyy')}</td>
-                  <td>{safeFormatDate(b.created_at, 'HH:mm')}</td>
+                  <td>{safeFormatDate(b.created_at, "dd/MM/yyyy")}</td>
+                  <td>{safeFormatDate(b.created_at, "HH:mm")}</td>
                   <td>
-                    {b.status === 'pendiente' 
-                      ? '--/--/--' 
-                      : safeFormatDate(b.fecha_agenda, 'dd/MM/yyyy')}
+                    {b.status === "pendiente"
+                      ? "--/--/--"
+                      : safeFormatDate(b.fecha_agenda, "dd/MM/yyyy")}
                   </td>
                   <td>
-                    {b.status === 'pendiente' 
-                      ? '--:--:--' 
-                      : (b.hora_agenda || '—')}
+                    {b.status === "pendiente"
+                      ? "--:--:--"
+                      : b.hora_agenda || "—"}
                   </td>
                   <td>
-                    <span className={`admin__status admin__status--${b.status}`}>
+                    <span
+                      className={`admin__status admin__status--${b.status}`}
+                    >
                       {statusLabels[b.status] || b.status}
                     </span>
                   </td>
-                  <td>{b.boleta || '—'}</td>
-                  <td>{b.ganancia ? formatCurrency(b.ganancia) : '—'}</td>
-                  <td>{b.motivo_cobro || '—'}</td>
+                  <td>{b.boleta || "—"}</td>
+                  <td>{b.ganancia ? formatCurrency(b.ganancia) : "—"}</td>
+                  <td>{b.motivo_cobro || "—"}</td>
                   {showActions && (
                     <td>
                       <button
@@ -195,21 +210,27 @@ function Admin() {
 
   const renderSolicitudesView = () => {
     const allBookings = [...bookings].sort((a, b) => {
-      const aDate = a.created_at || a.fecha_agenda || '';
-      const bDate = b.created_at || b.fecha_agenda || '';
+      const aDate = a.created_at || a.fecha_agenda || "";
+      const bDate = b.created_at || b.fecha_agenda || "";
       if (aDate > bDate) return -1;
       if (aDate < bDate) return 1;
       return 0;
     });
 
     const tieneEvidencia = (booking) => {
-      return !!(booking.evidenciaData || booking.evidenciaUrl || booking.evidencia);
+      return !!(
+        booking.evidenciaData ||
+        booking.evidenciaUrl ||
+        booking.evidencia
+      );
     };
 
     return (
       <div className="admin__view">
         <h2 className="admin__view-title">Solicitudes</h2>
-        <p className="admin__view-subtitle">Todas las solicitudes de clientes con su evidencia adjunta.</p>
+        <p className="admin__view-subtitle">
+          Todas las solicitudes de clientes con su evidencia adjunta.
+        </p>
         <div className="admin__table-wrapper">
           <h3 className="admin__table-title">Listado de solicitudes</h3>
           <div className="admin__table-scroll">
@@ -227,20 +248,30 @@ function Admin() {
               </thead>
               <tbody>
                 {allBookings.length === 0 ? (
-                  <tr><td colSpan="7" className="admin__empty">No hay solicitudes registradas.</td></tr>
+                  <tr>
+                    <td colSpan="7" className="admin__empty">
+                      No hay solicitudes registradas.
+                    </td>
+                  </tr>
                 ) : (
-                  allBookings.map(b => (
+                  allBookings.map((b) => (
                     <tr key={b.id}>
                       <td>{b.rut}</td>
                       <td>{b.nombre}</td>
                       <td>{b.apellido}</td>
                       <td>{b.service}</td>
-                      <td>{safeFormatDate(b.created_at, 'dd/MM/yyyy HH:mm')}</td>
+                      <td>
+                        {safeFormatDate(b.created_at, "dd/MM/yyyy HH:mm")}
+                      </td>
                       <td>
                         {tieneEvidencia(b) ? (
-                          <span className="admin__badge admin__badge--success">✅ Adjunto</span>
+                          <span className="admin__badge admin__badge--success">
+                            ✅ Adjunto
+                          </span>
                         ) : (
-                          <span className="admin__badge admin__badge--muted">❌ Sin evidencia</span>
+                          <span className="admin__badge admin__badge--muted">
+                            ❌ Sin evidencia
+                          </span>
                         )}
                       </td>
                       <td>
@@ -272,7 +303,7 @@ function Admin() {
       {renderMetricCards()}
       <section className="admin__dashboard-grid">
         <div className="admin__dashboard-item admin__dashboard-item--table">
-          {renderBookingTable(pendingBookings, 'Reservas pendientes')}
+          {renderBookingTable(pendingBookings, "Reservas pendientes")}
         </div>
         <div className="admin__dashboard-item admin__dashboard-item--calendar">
           <h3 className="admin__table-title">Calendario</h3>
@@ -319,12 +350,15 @@ function Admin() {
           </select>
         </div>
       </div>
-      {renderBookingTable(filteredBookings, `Resultados (${filteredBookings.length})`)}
+      {renderBookingTable(
+        filteredBookings,
+        `Resultados (${filteredBookings.length})`,
+      )}
     </div>
   );
 
   const renderEarningsView = () => {
-    const resueltos = bookings.filter(b => b.status === 'resuelto');
+    const resueltos = bookings.filter((b) => b.status === "resuelto");
     // ✅ CORRECCIÓN: Convertir ganancia a número antes de sumar
     const earningsByService = resueltos.reduce((acc, b) => {
       const service = b.service;
@@ -337,27 +371,52 @@ function Admin() {
       return acc;
     }, {});
     // ✅ CORRECCIÓN: Convertir ganancia a número para el total
-    const totalGeneral = resueltos.reduce((sum, b) => sum + Number(b.ganancia || 0), 0);
+    const totalGeneral = resueltos.reduce(
+      (sum, b) => sum + Number(b.ganancia || 0),
+      0,
+    );
 
     return (
       <div className="admin__view">
         <h2 className="admin__view-title">Resumen de ganancias</h2>
         <div className="admin__earnings-grid">
-          <div className="admin__earnings-card"><h4>Hoy</h4><p>{formatCurrency(earningsData.todayEarnings)}</p></div>
-          <div className="admin__earnings-card"><h4>Esta semana</h4><p>{formatCurrency(earningsData.weekEarnings)}</p></div>
-          <div className="admin__earnings-card"><h4>Este mes</h4><p>{formatCurrency(earningsData.monthEarnings)}</p></div>
-          <div className="admin__earnings-card"><h4>Total general</h4><p>{formatCurrency(totalGeneral)}</p></div>
+          <div className="admin__earnings-card">
+            <h4>Hoy</h4>
+            <p>{formatCurrency(earningsData.todayEarnings)}</p>
+          </div>
+          <div className="admin__earnings-card">
+            <h4>Esta semana</h4>
+            <p>{formatCurrency(earningsData.weekEarnings)}</p>
+          </div>
+          <div className="admin__earnings-card">
+            <h4>Este mes</h4>
+            <p>{formatCurrency(earningsData.monthEarnings)}</p>
+          </div>
+          <div className="admin__earnings-card">
+            <h4>Total general</h4>
+            <p>{formatCurrency(totalGeneral)}</p>
+          </div>
         </div>
         <div className="admin__earnings-detail">
           <h3>Desglose por servicio</h3>
           <div className="admin__table-scroll">
             <table className="admin__table">
-              <thead><tr><th>Servicio</th><th>Cantidad</th><th>Total ganado</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Servicio</th>
+                  <th>Cantidad</th>
+                  <th>Total ganado</th>
+                </tr>
+              </thead>
               <tbody>
                 {Object.keys(earningsByService).length === 0 ? (
-                  <tr><td colSpan="3" className="admin__empty">No hay trabajos resueltos.</td></tr>
+                  <tr>
+                    <td colSpan="3" className="admin__empty">
+                      No hay trabajos resueltos.
+                    </td>
+                  </tr>
                 ) : (
-                  Object.keys(earningsByService).map(service => (
+                  Object.keys(earningsByService).map((service) => (
                     <tr key={service}>
                       <td>{service}</td>
                       <td>{serviceCounts[service] || 0}</td>
@@ -380,8 +439,8 @@ function Admin() {
           rut: b.rut,
           nombre: b.nombre,
           apellido: b.apellido,
-          email: b.email || '',
-          telefono: b.telefono || '',
+          email: b.email || "",
+          telefono: b.telefono || "",
           bookings: 1,
         };
       } else {
@@ -411,13 +470,13 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {clients.map(c => (
+              {clients.map((c) => (
                 <tr key={c.rut}>
                   <td>{c.rut}</td>
                   <td>{c.nombre}</td>
                   <td>{c.apellido}</td>
-                  <td>{c.email || '—'}</td>
-                  <td>{c.telefono || '—'}</td>
+                  <td>{c.email || "—"}</td>
+                  <td>{c.telefono || "—"}</td>
                   <td>{c.bookings}</td>
                 </tr>
               ))}
@@ -434,17 +493,40 @@ function Admin() {
       <div className="admin__settings">
         <div className="admin__setting-group">
           <h3>Cambiar contraseña</h3>
-          <form onSubmit={(e) => { e.preventDefault(); alert('Funcionalidad simulada'); }}>
-            <input type="password" placeholder="Contraseña actual" className="admin__input" />
-            <input type="password" placeholder="Nueva contraseña" className="admin__input" />
-            <input type="password" placeholder="Confirmar nueva contraseña" className="admin__input" />
-            <button type="submit" className="admin__btn admin__btn--primary">Actualizar</button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Funcionalidad simulada");
+            }}
+          >
+            <input
+              type="password"
+              placeholder="Contraseña actual"
+              className="admin__input"
+            />
+            <input
+              type="password"
+              placeholder="Nueva contraseña"
+              className="admin__input"
+            />
+            <input
+              type="password"
+              placeholder="Confirmar nueva contraseña"
+              className="admin__input"
+            />
+            <button type="submit" className="admin__btn admin__btn--primary">
+              Actualizar
+            </button>
           </form>
         </div>
         <div className="admin__setting-group">
           <h3>Preferencias</h3>
-          <label><input type="checkbox" /> Notificaciones por correo</label>
-          <label><input type="checkbox" /> Recordatorios de reservas</label>
+          <label>
+            <input type="checkbox" /> Notificaciones por correo
+          </label>
+          <label>
+            <input type="checkbox" /> Recordatorios de reservas
+          </label>
         </div>
       </div>
     </div>
@@ -458,7 +540,11 @@ function Admin() {
           <span className="admin__logo-text">Gasfipro</span>
           <span className="admin__logo-badge">Admin</span>
         </div>
-        <button onClick={handleLogout} className="admin__nav-logout" aria-label="Cerrar sesión">
+        <button
+          onClick={handleLogout}
+          className="admin__nav-logout"
+          aria-label="Cerrar sesión"
+        >
           Cerrar sesión
         </button>
       </header>
@@ -467,30 +553,40 @@ function Admin() {
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
         <main className="admin__content" role="main">
-          {activeTab === 'dashboard' && renderDashboard()}
-          {activeTab === 'bookings' && renderBookingsView()}
-          {activeTab === 'earnings' && renderEarningsView()}
-          {activeTab === 'clients' && renderClientsView()}
-          {activeTab === 'solicitudes' && renderSolicitudesView()}
-          {activeTab === 'calendario' && (
+          {activeTab === "dashboard" && renderDashboard()}
+          {activeTab === "bookings" && renderBookingsView()}
+          {activeTab === "earnings" && renderEarningsView()}
+          {activeTab === "clients" && renderClientsView()}
+          {activeTab === "solicitudes" && renderSolicitudesView()}
+          {activeTab === "calendario" && (
             <div className="admin__view">
               <h2 className="admin__view-title">Calendario de citas</h2>
               <CalendarioCompleto bookings={bookings} />
             </div>
           )}
-          {activeTab === 'settings' && renderSettingsView()}
+          {activeTab === "settings" && renderSettingsView()}
         </main>
       </div>
 
       {/* Modal de edición */}
       {showEditModal && editingBooking && (
-        <div className="admin__modal-overlay" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+        <div
+          className="admin__modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-modal-title"
+        >
           <div className="admin__modal admin__modal--wide">
             <h3 id="edit-modal-title">Editar ticket</h3>
             <p className="admin__modal-subtitle">
-              {editingBooking.nombre} {editingBooking.apellido} - {editingBooking.rut}
+              {editingBooking.nombre} {editingBooking.apellido} -{" "}
+              {editingBooking.rut}
             </p>
-            {saveSuccess && <div className="admin__modal-success">✅ Cambios guardados correctamente.</div>}
+            {saveSuccess && (
+              <div className="admin__modal-success">
+                ✅ Cambios guardados correctamente.
+              </div>
+            )}
             <form onSubmit={handleEditSubmit}>
               <div className="admin__modal-grid">
                 <div className="admin__modal-field">
@@ -510,17 +606,22 @@ function Admin() {
                 <div className="admin__modal-field">
                   <label>Fecha y hora de solicitud (solo lectura)</label>
                   <div className="admin__modal-readonly">
-                    {safeFormatDate(editingBooking.created_at, 'dd/MM/yyyy HH:mm')}
+                    {safeFormatDate(
+                      editingBooking.created_at,
+                      "dd/MM/yyyy HH:mm",
+                    )}
                   </div>
                 </div>
 
-                {editStatus === 'agendado' && (
+                {editStatus === "agendado" && (
                   <>
                     <div className="admin__modal-field">
                       <label>Fecha de agenda</label>
                       <div className="admin__modal-calendar-wrapper">
                         <Calendar
-                          onChange={(date) => setEditDate(format(date, 'yyyy-MM-dd'))}
+                          onChange={(date) =>
+                            setEditDate(format(date, "yyyy-MM-dd"))
+                          }
                           value={parseISO(editDate)}
                           locale="es"
                           className="admin__modal-calendar"
@@ -541,10 +642,12 @@ function Admin() {
                   </>
                 )}
 
-                {editStatus === 'resuelto' && (
+                {editStatus === "resuelto" && (
                   <>
                     <div className="admin__modal-field">
-                      <label htmlFor="edit-earnings">Ganancia obtenida (CLP) *</label>
+                      <label htmlFor="edit-earnings">
+                        Ganancia obtenida (CLP) *
+                      </label>
                       <input
                         id="edit-earnings"
                         type="number"
@@ -573,12 +676,21 @@ function Admin() {
               </div>
 
               <div className="admin__modal-actions">
-                <button type="submit" className="admin__btn admin__btn--primary">
-                  {editStatus === 'agendado' ? 'Agendar' :
-                   editStatus === 'resuelto' ? 'Resolver' :
-                   'Guardar cambios'}
+                <button
+                  type="submit"
+                  className="admin__btn admin__btn--primary"
+                >
+                  {editStatus === "agendado"
+                    ? "Agendar"
+                    : editStatus === "resuelto"
+                      ? "Resolver"
+                      : "Guardar cambios"}
                 </button>
-                <button type="button" className="admin__btn admin__btn--cancel" onClick={closeEditModal}>
+                <button
+                  type="button"
+                  className="admin__btn admin__btn--cancel"
+                  onClick={closeEditModal}
+                >
                   Cancelar
                 </button>
               </div>
@@ -589,17 +701,29 @@ function Admin() {
 
       {/* Modal de evidencia */}
       {showEvidenciaModal && (
-        <div className="admin__modal-overlay" role="dialog" aria-modal="true" onClick={closeEvidenciaModal}>
-          <div className="admin__modal admin__modal--wide" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="admin__modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          onClick={closeEvidenciaModal}
+        >
+          <div
+            className="admin__modal admin__modal--wide"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3>Evidencia adjunta</h3>
             <p className="admin__modal-subtitle">
               <strong>Archivo:</strong> {evidenciaNombre}
             </p>
             <div className="admin__evidencia-contenedor">
-              {evidenciaData && (
-                (evidenciaTipo?.startsWith('image/') || 
-                 evidenciaNombre?.match(/\.(jpe?g|png|gif|webp|bmp|svg)$/i)) ? (
-                  <img src={evidenciaData} alt="Evidencia" className="admin__evidencia-imagen" />
+              {evidenciaData &&
+                (evidenciaTipo?.startsWith("image/") ||
+                evidenciaNombre?.match(/\.(jpe?g|png|gif|webp|bmp|svg)$/i) ? (
+                  <img
+                    src={evidenciaData}
+                    alt="Evidencia"
+                    className="admin__evidencia-imagen"
+                  />
                 ) : (
                   <div className="admin__evidencia-descarga">
                     <p>Este archivo no se puede previsualizar directamente.</p>
@@ -613,12 +737,14 @@ function Admin() {
                       📥 Descargar archivo
                     </a>
                   </div>
-                )
-              )}
+                ))}
               {!evidenciaData && <p>No hay evidencia adjunta.</p>}
             </div>
             <div className="admin__modal-actions">
-              <button className="admin__btn admin__btn--cancel" onClick={closeEvidenciaModal}>
+              <button
+                className="admin__btn admin__btn--cancel"
+                onClick={closeEvidenciaModal}
+              >
                 Cerrar
               </button>
             </div>

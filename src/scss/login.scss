@@ -4,7 +4,11 @@
   flex-direction: column;
   background-color: #ffffff;
   color: #0f172a;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
 
   &__header {
     display: flex;
@@ -123,7 +127,9 @@
     font-weight: 600;
     border-radius: 50px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s;
+    transition:
+      background 0.3s,
+      transform 0.1s;
     box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
     margin-top: 0.5rem;
     &:hover {

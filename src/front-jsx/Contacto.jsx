@@ -1,27 +1,22 @@
-import { useState } from 'react';
-import '../scss/contacto.scss';
+import { useState } from "react";
+import "../scss/contacto.scss";
 
 function Contacto() {
   const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    telefono: '',
-    mensaje: '',
+    nombre: "",
+    email: "",
+    telefono: "",
+    mensaje: "",
   });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.nombre || !formData.email || !formData.mensaje) {
-      alert('Por favor completa todos los campos obligatorios.');
+      alert("Por favor completa todos los campos obligatorios.");
       return;
     }
-    alert('¡Mensaje enviado con éxito! Te contactaremos a la brevedad.');
-    setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
+    alert("¡Mensaje enviado con éxito! Te contactaremos a la brevedad.");
+    setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
   };
 
   return (
@@ -41,7 +36,8 @@ function Contacto() {
       <main className="contacto__main">
         <h1 className="contacto__titulo">Contacto</h1>
         <p className="contacto__subtitulo">
-          ¿Tienes alguna consulta o necesitas ayuda? Escríbenos y te responderemos lo antes posible.
+          ¿Tienes alguna consulta o necesitas ayuda? Escríbenos y te
+          responderemos lo antes posible.
         </p>
 
         <div className="contacto__contenedor">

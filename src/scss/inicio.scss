@@ -4,7 +4,11 @@
   flex-direction: column;
   background-color: #ffffff;
   color: #0f172a;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
 
   // HEADER
   &__header {
@@ -102,7 +106,10 @@
     font-weight: 600;
     border-radius: 50px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+    transition:
+      background 0.3s,
+      transform 0.1s,
+      box-shadow 0.3s;
     &:active {
       transform: scale(0.98);
     }
@@ -163,7 +170,7 @@
     margin-bottom: 3rem;
     position: relative;
     &::after {
-      content: '';
+      content: "";
       display: block;
       width: 80px;
       height: 4px;
@@ -186,7 +193,9 @@
     padding: 2rem 1.5rem;
     border-radius: 16px;
     border: 1px solid #e2e8f0;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -288,7 +297,7 @@
     margin-bottom: 1.5rem;
     position: relative;
     &::after {
-      content: '';
+      content: "";
       display: block;
       width: 80px;
       height: 4px;
@@ -321,7 +330,9 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
     z-index: 1000;
     text-decoration: none;
     &:hover {

@@ -1,8 +1,8 @@
 // src/front-jsx/Reserva.jsx
-import { useReserva } from '../jsx/useReserva';
-import '../scss/reserva.scss';
-import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { useReserva } from "../jsx/useReserva";
+import "../scss/reserva.scss";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 
 function Reserva() {
   const {
@@ -27,7 +27,7 @@ function Reserva() {
 
   // Formatear fecha para mostrar
   const formatearFecha = (fechaISO) => {
-    if (!fechaISO) return '';
+    if (!fechaISO) return "";
     try {
       const fecha = parseISO(fechaISO);
       return format(fecha, "dd/MM/yyyy 'a las' HH:mm 'hrs'", { locale: es });
@@ -51,12 +51,17 @@ function Reserva() {
 
       <main className="reserva__main">
         <h1 className="reserva__titulo">Reservar tu hora</h1>
-        <p className="reserva__subtitulo">Completa tus datos para agendar una visita técnica.</p>
+        <p className="reserva__subtitulo">
+          Completa tus datos para agendar una visita técnica.
+        </p>
 
         {enviado ? (
           <div className="reserva__exito">
             <h2>¡Solicitud enviada!</h2>
-            <p>Nos pondremos en contacto contigo para confirmar la fecha y hora de la visita.</p>
+            <p>
+              Nos pondremos en contacto contigo para confirmar la fecha y hora
+              de la visita.
+            </p>
             <div className="reserva__boleta">
               <strong>Número de boleta:</strong>
               <span className="reserva__boleta-numero">{boleta}</span>
@@ -112,7 +117,12 @@ function Reserva() {
 
             <div className="reserva__campo">
               <label>Sexo</label>
-              <select name="sexo" value={formData.sexo} onChange={handleChange} disabled={isLoading}>
+              <select
+                name="sexo"
+                value={formData.sexo}
+                onChange={handleChange}
+                disabled={isLoading}
+              >
                 <option value="masculino">Masculino</option>
                 <option value="femenino">Femenino</option>
                 <option value="otro">Otro</option>
@@ -178,7 +188,10 @@ function Reserva() {
               )}
               {evidenciaBase64 && (
                 <div className="reserva__preview">
-                  <img src={evidenciaBase64} alt="Vista previa de la evidencia" />
+                  <img
+                    src={evidenciaBase64}
+                    alt="Vista previa de la evidencia"
+                  />
                 </div>
               )}
               <small>Formatos permitidos: imágenes, videos, PDF</small>
@@ -186,8 +199,12 @@ function Reserva() {
 
             {error && <div className="reserva__error">{error}</div>}
 
-            <button type="submit" className="reserva__boton" disabled={isLoading}>
-              {isLoading ? 'Enviando...' : 'Enviar solicitud'}
+            <button
+              type="submit"
+              className="reserva__boton"
+              disabled={isLoading}
+            >
+              {isLoading ? "Enviando..." : "Enviar solicitud"}
             </button>
           </form>
         )}

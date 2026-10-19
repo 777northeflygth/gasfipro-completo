@@ -1,12 +1,12 @@
 // src/front-jsx/Login.jsx
-import { useState, useEffect } from 'react';
-import { useAuth } from '../jsx/hooks/useAuth';
-import '../scss/login.scss';
+import { useState } from "react";
+import { useAuth } from "../jsx/hooks/useAuth";
+import "../scss/login.scss";
 
 function Login() {
-  const { login, loading, error, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login, loading, error } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ function Login() {
             {error && <div className="login__error">{error}</div>}
 
             <button type="submit" className="login__boton" disabled={loading}>
-              {loading ? 'Cargando...' : 'Ingresar'}
+              {loading ? "Cargando..." : "Ingresar"}
             </button>
           </form>
 

@@ -1,22 +1,22 @@
-import '../scss/cotizacion.scss';
+import "../scss/cotizacion.scss";
 
 function Cotizacion() {
   const servicios = [
-    { nombre: 'Detección y Reparación de fugas de agua', precio: 150000 },
-    { nombre: 'Reparación y Cambio de Cañerías', precio: 120000 },
-    { nombre: 'Destapes de alcantarillado', precio: 80000 },
-    { nombre: 'Destapes de cámaras y Desagües', precio: 70000 },
-    { nombre: 'Destape y limpieza vertical / horizontal', precio: 100000 },
-    { nombre: 'Destape de lavaplatos, tinas, lavamanos y WC', precio: 60000 },
-    { nombre: 'Mantención Preventiva de Redes Sanitarias', precio: 90000 },
-    { nombre: 'Limpieza de Tuberías con Hidrojet', precio: 110000 },
-    { nombre: 'Servicio de Transporte (traslado de equipos)', precio: 15000 },
+    { nombre: "Detección y Reparación de fugas de agua", precio: 150000 },
+    { nombre: "Reparación y Cambio de Cañerías", precio: 120000 },
+    { nombre: "Destapes de alcantarillado", precio: 80000 },
+    { nombre: "Destapes de cámaras y Desagües", precio: 70000 },
+    { nombre: "Destape y limpieza vertical / horizontal", precio: 100000 },
+    { nombre: "Destape de lavaplatos, tinas, lavamanos y WC", precio: 60000 },
+    { nombre: "Mantención Preventiva de Redes Sanitarias", precio: 90000 },
+    { nombre: "Limpieza de Tuberías con Hidrojet", precio: 110000 },
+    { nombre: "Servicio de Transporte (traslado de equipos)", precio: 15000 },
   ];
 
   const formatearPrecio = (monto) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
       minimumFractionDigits: 0,
     }).format(monto);
   };
@@ -37,21 +37,30 @@ function Cotizacion() {
       <main className="cotizacion__main">
         <h1 className="cotizacion__titulo">Lista de Precios</h1>
         <p className="cotizacion__subtitulo">
-          Valores referenciales (IVA incluido). Solicita una cotización personalizada según tu necesidad.
+          Valores referenciales (IVA incluido). Solicita una cotización
+          personalizada según tu necesidad.
         </p>
 
         <div className="cotizacion__tabla">
           {servicios.map((item, index) => (
             <div className="cotizacion__fila" key={index}>
               <span className="cotizacion__servicio">{item.nombre}</span>
-              <span className="cotizacion__precio">{formatearPrecio(item.precio)}</span>
+              <span className="cotizacion__precio">
+                {formatearPrecio(item.precio)}
+              </span>
             </div>
           ))}
         </div>
 
         <div className="cotizacion__nota">
-          <p>* Los precios pueden variar según la complejidad del trabajo y la ubicación.</p>
-          <p>** Consulta por descuentos para mantenciones preventivas o contratos de largo plazo.</p>
+          <p>
+            * Los precios pueden variar según la complejidad del trabajo y la
+            ubicación.
+          </p>
+          <p>
+            ** Consulta por descuentos para mantenciones preventivas o contratos
+            de largo plazo.
+          </p>
         </div>
       </main>
 
