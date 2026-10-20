@@ -1,0 +1,2 @@
+npm run test:coverage
+bandit -r backend/ -x backend/venv -ll -q
