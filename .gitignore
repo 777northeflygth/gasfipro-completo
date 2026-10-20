@@ -64,3 +64,6 @@ Thumbs.db
 .vscode/
 .idea/
 /backend/media/
+
+# Reportes de coverage (se regeneran con npm run test:coverage)
+coverage/
