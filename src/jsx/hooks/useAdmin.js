@@ -1,15 +1,12 @@
 // src/jsx/hooks/useAdmin.js
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval, parseISO, isBefore, startOfDay } from 'date-fns';
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'date-fns';
 import {
   fetchBookings,
   createBooking,
   updateBooking,
   deleteBooking,
   updateStatus,
-  fetchEarnings,
-  fetchClients,
-  fetchSolicitudes,
 } from '../services/api';
 
 export const useAdmin = () => {
@@ -178,7 +175,7 @@ export const useAdmin = () => {
     } catch (err) {
       alert('Error al guardar cambios: ' + err.message);
     }
-  }, [editingBooking, editDate, editTime, editStatus, editEarnings, editMotivo, closeEditModal, updateBooking]);
+  }, [editingBooking, editDate, editTime, editStatus, editEarnings, editMotivo, closeEditModal]);
 
   // --- Evidencia modal (mejorado) ---
   const openEvidenciaModal = useCallback((evidenciaPayload) => {

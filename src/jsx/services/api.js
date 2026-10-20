@@ -23,7 +23,7 @@ const authHeaders = () => ({
 // --- Función para manejar errores de respuesta ---
 const handleResponse = async (response) => {
   if (!response.ok) {
-    let errorMessage = 'Error en la petición';
+    let errorMessage;                                    // ← FIX: sin valor inicial (no-useless-assignment)
     try {
       const data = await response.json();
       errorMessage = data.detail || data.message || JSON.stringify(data);
@@ -65,7 +65,10 @@ const fetchWithAuth = async (url, options = {}) => {
       } catch (refreshError) {
         clearTokens();
         window.location.href = '/login';
-        throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.');
+        // FIX: usa refreshError como cause (resuelve no-unused-vars + preserve-caught-error)
+        throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.', {
+          cause: refreshError,
+        });
       }
     }
     throw error;
@@ -110,7 +113,10 @@ export const createBooking = async (data) => {
     } catch (refreshError) {
       clearTokens();
       window.location.href = '/login';
-      throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.');
+      // FIX: usa refreshError como cause
+      throw new Error('Sesión expirada. Por favor inicia sesión nuevamente.', {
+        cause: refreshError,
+      });
     }
   }
 
@@ -206,6 +212,7 @@ export const getEvidenciaUrl = (evidenciaPath) => {
 export const createReserva = async (reservaData) => {
   const requiredFields = ['rut', 'nombre', 'apellido', 'email', 'telefono', 'descripcion'];
   for (const field of requiredFields) {
+    // eslint-disable-next-line security/detect-object-injection
     if (!reservaData[field]) {
       throw new Error(`El campo ${field} es obligatorio.`);
     }
@@ -239,12 +246,12 @@ export const fetchEstadoReserva = async (params) => {
   }
 
   const data = await response.json();
-  
+
   // ✅ Extraer el array de reservas (el backend devuelve { reservas: [...] })
   if (data && data.reservas && Array.isArray(data.reservas)) {
     return data.reservas;
   }
-  
+
   // Fallback: si la respuesta no tiene el formato esperado, devolver array vacío
   console.warn('La respuesta de fetchEstadoReserva no contiene "reservas" array:', data);
   return [];
