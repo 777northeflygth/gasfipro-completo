@@ -22,6 +22,9 @@ class Booking(models.Model):
     email = models.EmailField()
     telefono = models.CharField(max_length=20)
     sexo = models.CharField(max_length=10, choices=SEXO_CHOICES, default='masculino')
+    
+    # ✅ NUEVO - Campo de dirección
+    direccion = models.CharField(max_length=255, null=True, blank=True, verbose_name="Dirección")
 
     # Servicio y descripción
     service = models.CharField(max_length=200, blank=True, default='')  # Nombre del servicio

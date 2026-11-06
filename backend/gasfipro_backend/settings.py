@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,10 +39,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # ✅ NUEVO - requerido por django-allauth
     # Terceros
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    # ✅ NUEVO - allauth + dj-rest-auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
     # Local
     'api',
 ]
@@ -55,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # ✅ NUEVO - requerido por allauth
 ]
 
 ROOT_URLCONF = 'gasfipro_backend.urls'
@@ -137,13 +146,68 @@ CORS_ALLOW_ALL_ORIGINS = True  # Solo desarrollo
 
 
 # ---- Límite de tamaño de archivos (15 MB) ----
-# Controla el tamaño máximo de los datos POST (incluyendo archivos)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 15 MB
-# Controla cuándo un archivo se escribe en disco en lugar de mantenerse en memoria
 FILE_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 15 MB
 
 
+# ============================================================
+# ✅ NUEVO - Configuración de django-allauth
+# ============================================================
+
+SITE_ID = 1  # Requerido por allauth (sites framework)
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Métodos de login y campos de registro (allauth >= 65)
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+
+# Sin verificación de email (suficiente para tu caso: solo login con Google)
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# Adaptador personalizado que restringe el acceso a UNA sola cuenta de Google
+SOCIALACCOUNT_ADAPTER = 'api.adapters.CustomSocialAccountAdapter'
+
+# Proveedor de Google: credenciales desde variables de entorno (o fallback)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # ✅ CAMBIO CLAVE 1: Agregamos el scope del Calendario
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/calendar', # Permiso para leer y escribir en Calendar
+        ],
+        # ✅ CAMBIO CLAVE 2: offline y consent para obtener el Refresh Token
+        'AUTH_PARAMS': {
+            'access_type': 'offline',
+            'prompt': 'consent',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+        'APPS': [
+            {
+                'client_id': os.getenv('GOOGLE_CLIENT_ID', '129169394896-kbkqsaqoa29nkqek35pc315kb19eae1c.apps.googleusercontent.com'),
+                # ✅ CORREGIDO: Se ha cambiado la 'y' por la 't' en el secreto
+                'secret': os.getenv('GOOGLE_CLIENT_SECRET', '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'),
+                'key': '',
+            },
+        ],
+    }
+}
+
+# Deshabilitamos login "clásico" de allauth con formularios (no lo usamos en SPA)
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
+
+# ✅ NUEVO - Le dice a django-allauth que guarde los tokens de acceso en la base de datos
+SOCIALACCOUNT_STORE_TOKENS = True
+
+
+# ============================================================
 # Django REST Framework
+# (se mantiene tal cual, solo añadimos config de dj-rest-auth abajo)
+# ============================================================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -153,11 +217,10 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
-    # Permitir grandes cantidades de datos en las peticiones
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',  # Necesario para subida de archivos
+        'rest_framework.parsers.MultiPartParser',
     ],
 }
 
@@ -166,3 +229,21 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+
+# ============================================================
+# ✅ NUEVO - Configuración de dj-rest-auth
+# ============================================================
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': None,
+    'JWT_AUTH_REFRESH_COOKIE': None,
+    'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer',
+    'SESSION_LOGIN': False,
+    'TOKEN_MODEL': None,   # ✅ NUEVO - usamos JWT, no Token clásico
+}
+
+# ============================================================
+# ✅ NUEVO - Cabecera de seguridad para permitir el Popup de Google
+# ============================================================
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"

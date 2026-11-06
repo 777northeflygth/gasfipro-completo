@@ -21,7 +21,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = '__all__'  # Incluye todos los campos del modelo
+        fields = '__all__'  # Incluye todos los campos del modelo (incluido 'direccion' automáticamente)
         read_only_fields = ['id', 'created_at', 'updated_at', 'boleta']
 
     def get_full_name(self, obj):
@@ -42,6 +42,12 @@ class BookingSerializer(serializers.ModelSerializer):
         from django.utils import timezone
         if value and value < timezone.now().date():
             raise serializers.ValidationError("La fecha de agenda no puede ser en el pasado.")
+        return value
+
+    # ✅ NUEVO - Validación para asegurar que la dirección no venga vacía
+    def validate_direccion(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("La dirección es obligatoria para agendar la visita.")
         return value
 
     def _procesar_evidencia(self, instance, evidencia_base64, evidencia_nombre):

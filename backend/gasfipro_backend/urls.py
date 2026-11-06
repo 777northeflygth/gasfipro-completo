@@ -19,9 +19,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# ✅ NUEVO - Importar la vista de login con Google
+from api.views import GoogleLogin
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),  # Rutas de la API (crearemos el archivo urls.py dentro de api/)
+
+    # ✅ NUEVO - Endpoint específico para Login social con Google
+    # IMPORTANTE: Debe ir ANTES de los includes generales de dj_rest_auth para evitar conflictos
+    path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
+
+    # ✅ NUEVO - Autenticación social (django-allauth + dj-rest-auth)
+    path('api/auth/', include('dj_rest_auth.urls')),              # login, logout, user, etc.
+    path('api/auth/', include('dj_rest_auth.registration.urls')), # registro / login social
+    path('accounts/', include('allauth.urls')),                   # flujo interno de allauth
 ]
 
 # Servir archivos media en desarrollo (evidencias)
