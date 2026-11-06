@@ -9,6 +9,7 @@ export const useReserva = () => {
     apellido: '',
     rut: '',
     sexo: 'masculino',
+    direccion: '', // ✅ NUEVO - Campo agregado
     email: '',
     telefono: '',
     descripcion: '',
@@ -77,7 +78,8 @@ export const useReserva = () => {
   };
 
   const validarFormulario = () => {
-    if (!formData.nombre || !formData.apellido || !formData.rut || !formData.descripcion || !formData.email || !formData.telefono) {
+    // ✅ NUEVO - Agregamos formData.direccion a la validación
+    if (!formData.nombre || !formData.apellido || !formData.rut || !formData.direccion || !formData.descripcion || !formData.email || !formData.telefono) {
       setError('Por favor completa todos los campos obligatorios.');
       return false;
     }
@@ -110,6 +112,7 @@ export const useReserva = () => {
         rut: formData.rut,
         nombre: formData.nombre,
         apellido: formData.apellido,
+        direccion: formData.direccion, // ✅ NUEVO - Enviamos la dirección al backend
         email: formData.email,
         telefono: formData.telefono,
         sexo: formData.sexo,
@@ -140,6 +143,7 @@ export const useReserva = () => {
       apellido: '',
       rut: '',
       sexo: 'masculino',
+      direccion: '', // ✅ NUEVO - Limpiamos el campo al resetear
       email: '',
       telefono: '',
       descripcion: '',
@@ -242,4 +246,4 @@ export const useReserva = () => {
     consultarEstado,
     limpiarConsulta,
   };
-}; 
+};

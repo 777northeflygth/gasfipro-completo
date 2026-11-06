@@ -206,11 +206,11 @@ export const useAdmin = () => {
         }
       }
 
-      // Preparar payload
+      // ✅ CORRECCIÓN: Mantener la fecha de agenda si ya existía para no perder el historial
       const payload = {
         status: editStatus,
-        fecha_agenda: editStatus === "agendado" ? editDate : null,
-        hora_agenda: editStatus === "agendado" ? editTime : null,
+        fecha_agenda: editStatus === "agendado" ? editDate : editingBooking.fecha_agenda,
+        hora_agenda: editStatus === "agendado" ? editTime : editingBooking.hora_agenda,
         ganancia: editStatus === "resuelto" ? parseFloat(editEarnings) : null,
         motivo_cobro: editStatus === "resuelto" ? editMotivo.trim() : "",
       };
@@ -317,19 +317,26 @@ export const useAdmin = () => {
     return pendingBookings.filter((b) => b.fecha_agenda === todayStr);
   }, [pendingBookings, todayStr]);
 
-  // ✅ CORRECCIÓN: Convertir ganancia a número en todos los cálculos
+  // ✅ CORRECCIÓN: Uso de fecha de agenda o, si no existe, la fecha de actualización
   const earningsData = useMemo(() => {
     const resueltos = bookingsArray.filter((b) => b.status === "resuelto");
+    
+    // Función auxiliar para obtener la mejor fecha de referencia para el cobro
+    const getEarningDate = (b) => {
+      if (b.fecha_agenda) return b.fecha_agenda;
+      if (b.updated_at) return b.updated_at.split('T')[0]; // Fecha en que se resolvió
+      return b.created_at ? b.created_at.split('T')[0] : todayStr;
+    };
+
     const todayEarnings = resueltos
-      .filter((b) => b.fecha_agenda === todayStr)
+      .filter((b) => getEarningDate(b) === todayStr)
       .reduce((sum, b) => sum + Number(b.ganancia || 0), 0);
 
     const weekStart = startOfWeek(today, { weekStartsOn: 1 });
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const weekEarnings = resueltos
       .filter((b) => {
-        if (!b.fecha_agenda) return false;
-        const bDate = parseISO(b.fecha_agenda);
+        const bDate = parseISO(getEarningDate(b));
         return isWithinInterval(bDate, { start: weekStart, end: weekEnd });
       })
       .reduce((sum, b) => sum + Number(b.ganancia || 0), 0);
@@ -338,8 +345,7 @@ export const useAdmin = () => {
     const monthEnd = endOfMonth(today);
     const monthEarnings = resueltos
       .filter((b) => {
-        if (!b.fecha_agenda) return false;
-        const bDate = parseISO(b.fecha_agenda);
+        const bDate = parseISO(getEarningDate(b));
         return isWithinInterval(bDate, { start: monthStart, end: monthEnd });
       })
       .reduce((sum, b) => sum + Number(b.ganancia || 0), 0);

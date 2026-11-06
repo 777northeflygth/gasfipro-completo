@@ -42,9 +42,16 @@ const Sidebar = ({ activeTab, onTabChange }) => (
   </aside>
 );
 
+// ✅ Función auxiliar para generar la URL de Google Maps
+const getMapsUrl = (direccion) => {
+  if (!direccion) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+};
+
 function Admin() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [syncing, setSyncing] = useState(false); // ✅ Estado para el botón de Calendar
 
   const {
     bookings,
@@ -87,6 +94,32 @@ function Admin() {
   } = useAdmin();
 
   const handleLogout = () => navigate("/login");
+
+  // ✅ NUEVO - Función para sincronizar manualmente una reserva con Google Calendar
+  const handleSyncCalendar = async (bookingId) => {
+    setSyncing(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/bookings/${bookingId}/sync-calendar/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ " + (data.message || "Reserva sincronizada exitosamente con Google Calendar."));
+      } else {
+        alert("❌ Error: " + (data.error || "No se pudo sincronizar con el calendario."));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("❌ Error de conexión al intentar sincronizar.");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   // ---- Funciones de renderizado ----
 
@@ -147,6 +180,7 @@ function Admin() {
                 <th>RUT</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
+                <th>Dirección</th>
                 <th>Servicio</th>
                 <th>Fecha solicitud</th>
                 <th>Hora solicitud</th>
@@ -165,6 +199,21 @@ function Admin() {
                   <td>{b.rut}</td>
                   <td>{b.nombre}</td>
                   <td>{b.apellido}</td>
+                  <td>
+                    {b.direccion ? (
+                      <a
+                        href={getMapsUrl(b.direccion)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#0ea5e9", textDecoration: "underline" }}
+                        title="Ver en Google Maps"
+                      >
+                        📍 {b.direccion}
+                      </a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td>{b.service}</td>
                   <td>{safeFormatDate(b.created_at, "dd/MM/yyyy")}</td>
                   <td>{safeFormatDate(b.created_at, "HH:mm")}</td>
@@ -189,13 +238,23 @@ function Admin() {
                   <td>{b.ganancia ? formatCurrency(b.ganancia) : "—"}</td>
                   <td>{b.motivo_cobro || "—"}</td>
                   {showActions && (
-                    <td>
+                    <td style={{ display: 'flex', gap: '5px' }}>
                       <button
                         className="admin__btn admin__btn--edit"
                         onClick={() => openEditModal(b)}
                         aria-label={`Editar reserva de ${b.nombre} ${b.apellido}`}
                       >
-                        ✏️ Editar
+                        ✏️
+                      </button>
+                      {/* ✅ NUEVO - Botón de sincronización con Google Calendar */}
+                      <button
+                        className="admin__btn"
+                        style={{ backgroundColor: '#4285F4', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}
+                        onClick={() => handleSyncCalendar(b.id)}
+                        disabled={syncing}
+                        title="Sincronizar con Google Calendar"
+                      >
+                        📅
                       </button>
                     </td>
                   )}
@@ -240,6 +299,7 @@ function Admin() {
                   <th>RUT</th>
                   <th>Nombre</th>
                   <th>Apellido</th>
+                  <th>Dirección</th>
                   <th>Servicio</th>
                   <th>Fecha solicitud</th>
                   <th>Evidencia</th>
@@ -249,7 +309,7 @@ function Admin() {
               <tbody>
                 {allBookings.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="admin__empty">
+                    <td colSpan="8" className="admin__empty">
                       No hay solicitudes registradas.
                     </td>
                   </tr>
@@ -259,6 +319,21 @@ function Admin() {
                       <td>{b.rut}</td>
                       <td>{b.nombre}</td>
                       <td>{b.apellido}</td>
+                      <td>
+                        {b.direccion ? (
+                          <a
+                            href={getMapsUrl(b.direccion)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "#0ea5e9", textDecoration: "underline" }}
+                            title="Ver en Google Maps"
+                          >
+                            📍 {b.direccion}
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
                       <td>{b.service}</td>
                       <td>
                         {safeFormatDate(b.created_at, "dd/MM/yyyy HH:mm")}
@@ -359,7 +434,13 @@ function Admin() {
 
   const renderEarningsView = () => {
     const resueltos = bookings.filter((b) => b.status === "resuelto");
-    // ✅ CORRECCIÓN: Convertir ganancia a número antes de sumar
+    
+    const resueltosOrdenados = [...resueltos].sort((a, b) => {
+      const dateA = a.fecha_agenda || a.updated_at || a.created_at;
+      const dateB = b.fecha_agenda || b.updated_at || b.created_at;
+      return dateB.localeCompare(dateA);
+    });
+
     const earningsByService = resueltos.reduce((acc, b) => {
       const service = b.service;
       const ganancia = Number(b.ganancia) || 0;
@@ -370,7 +451,6 @@ function Admin() {
       acc[b.service] = (acc[b.service] || 0) + 1;
       return acc;
     }, {});
-    // ✅ CORRECCIÓN: Convertir ganancia a número para el total
     const totalGeneral = resueltos.reduce(
       (sum, b) => sum + Number(b.ganancia || 0),
       0,
@@ -379,6 +459,7 @@ function Admin() {
     return (
       <div className="admin__view">
         <h2 className="admin__view-title">Resumen de ganancias</h2>
+        
         <div className="admin__earnings-grid">
           <div className="admin__earnings-card">
             <h4>Hoy</h4>
@@ -397,7 +478,50 @@ function Admin() {
             <p>{formatCurrency(totalGeneral)}</p>
           </div>
         </div>
-        <div className="admin__earnings-detail">
+
+        <div className="admin__earnings-detail" style={{ marginTop: '2rem' }}>
+          <h3>Historial de atenciones</h3>
+          <div className="admin__table-scroll">
+            <table className="admin__table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>RUT</th>
+                  <th>Boleta</th>
+                  <th>Servicio</th>
+                  <th>Motivo</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resueltosOrdenados.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="admin__empty">
+                      No hay atenciones resueltas registradas.
+                    </td>
+                  </tr>
+                ) : (
+                  resueltosOrdenados.map((b) => (
+                    <tr key={b.id}>
+                      <td>{safeFormatDate(b.fecha_agenda || b.updated_at, "dd/MM/yyyy")}</td>
+                      <td>{b.nombre} {b.apellido}</td>
+                      <td>{b.rut}</td>
+                      <td>{b.boleta || "—"}</td>
+                      <td>{b.service}</td>
+                      <td>{b.motivo_cobro || "—"}</td>
+                      <td style={{ fontWeight: 'bold', color: '#16a34a' }}>
+                        {formatCurrency(b.ganancia)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="admin__earnings-detail" style={{ marginTop: '2rem' }}>
           <h3>Desglose por servicio</h3>
           <div className="admin__table-scroll">
             <table className="admin__table">
@@ -441,6 +565,7 @@ function Admin() {
           apellido: b.apellido,
           email: b.email || "",
           telefono: b.telefono || "",
+          direccion: b.direccion || "", 
           bookings: 1,
         };
       } else {
@@ -448,6 +573,7 @@ function Admin() {
         acc[b.rut].apellido = b.apellido;
         if (b.email) acc[b.rut].email = b.email;
         if (b.telefono) acc[b.rut].telefono = b.telefono;
+        if (b.direccion) acc[b.rut].direccion = b.direccion; 
         acc[b.rut].bookings += 1;
       }
       return acc;
@@ -466,6 +592,7 @@ function Admin() {
                 <th>Apellido</th>
                 <th>Correo</th>
                 <th>Teléfono</th>
+                <th>Dirección</th> 
                 <th>Reservas</th>
               </tr>
             </thead>
@@ -477,6 +604,21 @@ function Admin() {
                   <td>{c.apellido}</td>
                   <td>{c.email || "—"}</td>
                   <td>{c.telefono || "—"}</td>
+                  <td>
+                    {c.direccion ? (
+                      <a
+                        href={getMapsUrl(c.direccion)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#0ea5e9", textDecoration: "underline" }}
+                        title="Ver en Google Maps"
+                      >
+                        📍 {c.direccion}
+                      </a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td>{c.bookings}</td>
                 </tr>
               ))}

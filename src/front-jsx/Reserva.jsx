@@ -115,6 +115,20 @@ function Reserva() {
               />
             </div>
 
+            {/* ✅ NUEVO - Campo de Dirección */}
+            <div className="reserva__campo">
+              <label>Dirección *</label>
+              <input
+                type="text"
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleChange}
+                placeholder="Ej: Av. Providencia 1234, Depto 56"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
             <div className="reserva__campo">
               <label>Sexo</label>
               <select

@@ -1,24 +1,27 @@
 // src/front-jsx/ProtectedRoute.jsx
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../jsx/hooks/useAuth'; // ← Ruta corregida
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../jsx/hooks/useAuth';
 
 export default function ProtectedRoute({ children }) {
-  const { isAuthenticated, loading, error } = useAuth();
+  const { loading, isAuthenticated, checkAuth } = useAuth();
 
-  // Mostrar mensaje de carga mientras se verifica la sesión
+  // Como el hook se monta de nuevo, 'loading' será true un instante.
   if (loading) {
     return (
-      <div className="loading-screen">
+      <div className="loading-screen" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <p>Verificando sesión...</p>
       </div>
     );
   }
 
-  // Si hay un error de autenticación o no está autenticado, redirigir al login
-  if (error || !isAuthenticated) {
+  // Verificamos si hay token en el localStorage (síncrono) por si el estado de React tarda en actualizarse
+  const hasToken = localStorage.getItem('access_token');
+  
+  if (!isAuthenticated && !hasToken) {
+    console.log("🔒 No autenticado, redirigiendo a /login");
     return <Navigate to="/login" replace />;
   }
 
-  // Si está autenticado, renderizar el contenido
-  return children;
+  // Si está autenticado o hay token, renderizamos
+  return children ? children : <Outlet />;
 }

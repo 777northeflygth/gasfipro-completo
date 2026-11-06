@@ -68,3 +68,4 @@ Thumbs.db
 # Reportes de coverage (se regeneran con npm run test:coverage)
 coverage/
 coverage/
+backend/

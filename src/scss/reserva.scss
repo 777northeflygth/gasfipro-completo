@@ -159,6 +159,7 @@
     border: 1px solid #e2e8f0;
   }
 
+  // ✅ Aquí se estiliza automáticamente el campo de Dirección
   &__campo {
     display: flex;
     flex-direction: column;
