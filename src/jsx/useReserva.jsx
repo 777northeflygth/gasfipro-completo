@@ -1,4 +1,5 @@
 // src/jsx/useReserva.jsx
+
 import { useState } from 'react';
 import { createReserva, fetchEstadoReserva } from './services/api';
 
@@ -84,8 +85,16 @@ export const useReserva = () => {
       return false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    // ✅ CORRECCIÓN SONARCLOUD: Validación de email sin regex (evita ReDoS)
+    const emailParts = formData.email.split('@');
+    const isValidEmail = 
+      emailParts.length === 2 && 
+      emailParts[0].trim().length > 0 && 
+      emailParts[1].includes('.') && 
+      !emailParts[1].startsWith('.') && 
+      !emailParts[1].endsWith('.');
+
+    if (!isValidEmail) {
       setError('Por favor ingresa un correo electrónico válido.');
       return false;
     }

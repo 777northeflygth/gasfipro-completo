@@ -4,6 +4,21 @@ import "../scss/reserva.scss";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
+// ✅ CORRECCIÓN SONARCLOUD: Sanitizar URLs (para la previsualización de imagen)
+const getSafeUrl = (url) => {
+  if (!url || typeof url !== "string") return "";
+  if (
+    url.startsWith("data:image/") ||
+    url.startsWith("blob:") ||
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("/media/")
+  ) {
+    return url;
+  }
+  return "";
+};
+
 function Reserva() {
   const {
     formData,
@@ -12,7 +27,7 @@ function Reserva() {
     handleSubmit,
     enviado,
     boleta,
-    fechaSolicitud, // 🆕
+    fechaSolicitud,
     isLoading,
     error,
     resetForm,
@@ -79,8 +94,10 @@ function Reserva() {
         ) : (
           <form className="reserva__form" onSubmit={handleSubmit}>
             <div className="reserva__campo">
-              <label>Nombre *</label>
+              {/* ✅ CORRECCIÓN SONARCLOUD: Añadido htmlFor e id */}
+              <label htmlFor="nombre">Nombre *</label>
               <input
+                id="nombre"
                 type="text"
                 name="nombre"
                 value={formData.nombre}
@@ -91,8 +108,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Apellido *</label>
+              <label htmlFor="apellido">Apellido *</label>
               <input
+                id="apellido"
                 type="text"
                 name="apellido"
                 value={formData.apellido}
@@ -103,8 +121,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>RUT *</label>
+              <label htmlFor="rut">RUT *</label>
               <input
+                id="rut"
                 type="text"
                 name="rut"
                 value={formData.rut}
@@ -117,8 +136,9 @@ function Reserva() {
 
             {/* ✅ NUEVO - Campo de Dirección */}
             <div className="reserva__campo">
-              <label>Dirección *</label>
+              <label htmlFor="direccion">Dirección *</label>
               <input
+                id="direccion"
                 type="text"
                 name="direccion"
                 value={formData.direccion}
@@ -130,8 +150,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Sexo</label>
+              <label htmlFor="sexo">Sexo</label>
               <select
+                id="sexo"
                 name="sexo"
                 value={formData.sexo}
                 onChange={handleChange}
@@ -144,8 +165,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Correo electrónico *</label>
+              <label htmlFor="email">Correo electrónico *</label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 value={formData.email}
@@ -157,8 +179,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Teléfono *</label>
+              <label htmlFor="telefono">Teléfono *</label>
               <input
+                id="telefono"
                 type="tel"
                 name="telefono"
                 value={formData.telefono}
@@ -170,8 +193,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Descripción del problema *</label>
+              <label htmlFor="descripcion">Descripción del problema *</label>
               <textarea
+                id="descripcion"
                 name="descripcion"
                 value={formData.descripcion}
                 onChange={handleChange}
@@ -182,8 +206,9 @@ function Reserva() {
             </div>
 
             <div className="reserva__campo">
-              <label>Evidencia (opcional) - Máx 15MB</label>
+              <label htmlFor="evidencia">Evidencia (opcional) - Máx 15MB</label>
               <input
+                id="evidencia"
                 type="file"
                 name="evidencia"
                 onChange={handleFileChange}
@@ -203,7 +228,7 @@ function Reserva() {
               {evidenciaBase64 && (
                 <div className="reserva__preview">
                   <img
-                    src={evidenciaBase64}
+                    src={getSafeUrl(evidenciaBase64)} // ✅ CORRECCIÓN SONARCLOUD: Sanitizar src
                     alt="Vista previa de la evidencia"
                   />
                 </div>

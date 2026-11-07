@@ -119,13 +119,11 @@ function CalendarioCompleto({ bookings }) {
   // Rango de horas según la vista
   const getMinMax = useCallback(() => {
     if (vistaActual === 'day') {
-      // Vista día: mostrar 24 horas completas (00:00 - 23:59)
       return {
         min: new Date(0, 0, 0, 0, 0, 0),
         max: new Date(0, 0, 0, 23, 59, 59),
       };
     } else {
-      // Vista semana o mes: rango laboral de 8:00 a 20:00
       return {
         min: new Date(0, 0, 0, 8, 0, 0),
         max: new Date(0, 0, 0, 20, 0, 0),
@@ -213,11 +211,24 @@ function CalendarioCompleto({ bookings }) {
         }}
       />
 
-      {/* Modal de detalles */}
+      {/* ✅ CORRECCIÓN SONARCLOUD: Modal accesible */}
       {eventoSeleccionado && (
-        <div className="calendario-modal-overlay" onClick={handleCloseModal}>
-          <div className="calendario-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Detalles de la reserva</h3>
+        <div 
+          className="calendario-modal-overlay" 
+          onClick={handleCloseModal}
+          role="presentation"
+          onKeyDown={(e) => e.key === 'Escape' && handleCloseModal()}
+        >
+          <div 
+            className="calendario-modal" 
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="calendar-modal-title"
+            tabIndex={-1}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <h3 id="calendar-modal-title">Detalles de la reserva</h3>
             <div className="calendario-modal-body">
               <p><strong>Cliente:</strong> {eventoSeleccionado.nombre} {eventoSeleccionado.apellido}</p>
               <p><strong>RUT:</strong> {eventoSeleccionado.rut}</p>

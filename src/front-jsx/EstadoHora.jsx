@@ -2,6 +2,21 @@
 import { useEstadoHora } from '../jsx/hooks/useEstadoHora';
 import '../scss/estado-hora.scss';
 
+// ✅ CORRECCIÓN SONARCLOUD: Sanitizar URLs para evitar XSS
+const getSafeUrl = (url) => {
+  if (!url || typeof url !== "string") return "";
+  if (
+    url.startsWith("data:image/") ||
+    url.startsWith("blob:") ||
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("/media/")
+  ) {
+    return url;
+  }
+  return ""; // Bloquear javascript:, vbscript:, etc.
+};
+
 function EstadoHora() {
   const {
     tipoBusqueda,
@@ -21,9 +36,10 @@ function EstadoHora() {
     cambiarTipoBusqueda,
   } = useEstadoHora();
 
-  const handleSubmit = (e) => {
+  // ✅ CORRECCIÓN SONARCLOUD: Hacemos la función asíncrona y esperamos la promesa
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    consultar(e);
+    await consultar(e);
   };
 
   const handleReset = () => {
@@ -217,7 +233,7 @@ function EstadoHora() {
                         <div className="estado-hora__info-item estado-hora__info-item--full">
                           <span className="estado-hora__info-label">Evidencia adjunta</span>
                           <a
-                            href={reserva.evidencia}
+                            href={getSafeUrl(reserva.evidencia)} // ✅ URL sanitizada
                             target="_blank"
                             rel="noopener noreferrer"
                             className="estado-hora__link"

@@ -100,7 +100,9 @@ export const useAuth = () => {
       }
     };
 
-    verifyAuth();
+    // ✅ CORRECCIÓN SONARCLOUD: Usar 'void' para indicar que se ignora la promesa intencionalmente
+    void verifyAuth();
+
   }, [getAccessToken, getRefreshToken, isTokenExpired, decodeToken, clearTokens]);
 
   // --- Login Tradicional ---
@@ -224,7 +226,8 @@ export const useAuth = () => {
     const token = getAccessToken();
     if (!token) return false;
     if (isTokenExpired(token)) {
-      refreshToken();
+      // ✅ CORRECCIÓN SONARCLOUD: Uso de 'void' para llamar a la promesa sin esperarla
+      void refreshToken();
       return false;
     }
     return true;

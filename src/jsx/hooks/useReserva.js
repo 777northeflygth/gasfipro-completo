@@ -1,4 +1,5 @@
 // src/jsx/hooks/useReserva.js
+
 import { useState } from 'react';
 import { createReserva } from '../services/api';
 
@@ -14,6 +15,10 @@ export const useReserva = () => {
     evidencia: null,
   });
 
+  // Estado para guardar el base64 y el nombre del archivo
+  const [evidenciaBase64, setEvidenciaBase64] = useState(null);
+  const [evidenciaNombre, setEvidenciaNombre] = useState('');
+
   const [enviado, setEnviado] = useState(false);
   const [boleta, setBoleta] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +26,20 @@ export const useReserva = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === 'evidencia') {
-      setFormData((prev) => ({ ...prev, evidencia: files[0] }));
+      const file = files[0];
+      if (file) {
+        setFormData((prev) => ({ ...prev, evidencia: file }));
+        setEvidenciaNombre(file.name);
+
+        // Convertir archivo a Base64 para enviarlo a Django
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setEvidenciaBase64(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -34,8 +51,11 @@ export const useReserva = () => {
       return false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    // ✅ CORRECCIÓN SONARCLOUD: Validación de email sin regex (evita ReDoS)
+    const emailParts = formData.email.split('@');
+    const isEmailValid = emailParts.length === 2 && emailParts[1].includes('.') && !emailParts[1].startsWith('.') && !emailParts[1].endsWith('.');
+
+    if (!isEmailValid) {
       setError('Por favor ingresa un correo electrónico válido.');
       return false;
     }
@@ -70,7 +90,9 @@ export const useReserva = () => {
         fecha_agenda: new Date().toISOString().split('T')[0],
         hora_agenda: '09:00:00',
         status: 'pendiente',
-        evidencia: formData.evidencia,
+        // ✅ CORRECCIÓN: Enviamos el Base64 y el Nombre que espera el backend
+        evidenciaBase64: evidenciaBase64,
+        evidenciaNombre: evidenciaNombre,
       };
 
       const response = await createReserva(payload);
@@ -94,6 +116,8 @@ export const useReserva = () => {
       descripcion: '',
       evidencia: null,
     });
+    setEvidenciaBase64(null);
+    setEvidenciaNombre('');
     setEnviado(false);
     setBoleta('');
     setError('');
@@ -108,5 +132,7 @@ export const useReserva = () => {
     isLoading,
     error,
     resetForm,
+    evidenciaBase64, // Opcional, por si lo necesitas en la vista
+    evidenciaNombre, // Opcional
   };
 };

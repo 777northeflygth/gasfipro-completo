@@ -29,10 +29,10 @@ export const statusLabels = {
   resuelto: "Resuelto",
 };
 
-// ✅ FORMATOS: Convertir a número antes de formatear
+// ✅ CORRECCIÓN SONARCLOUD: Uso de Number.isNaN
 export const formatCurrency = (amount) => {
   const num = Number(amount);
-  if (isNaN(num)) return "$0";
+  if (Number.isNaN(num)) return "$0";
   return `$${num.toLocaleString("es-CL")}`;
 };
 
@@ -77,7 +77,6 @@ export const useAdmin = () => {
     setError(null);
     try {
       const data = await fetchBookings();
-      // Si la respuesta tiene paginación (results), extraer el array
       let bookingsData;
       if (data && typeof data === "object" && data.results) {
         bookingsData = data.results;
@@ -105,7 +104,7 @@ export const useAdmin = () => {
       setBookings((prev) =>
         Array.isArray(prev)
           ? prev.map((b) => (b.id === id ? updated : b))
-          : [updated],
+          : [updated]
       );
       return updated;
     } catch (err) {
@@ -118,7 +117,7 @@ export const useAdmin = () => {
     try {
       await deleteBooking(id);
       setBookings((prev) =>
-        Array.isArray(prev) ? prev.filter((b) => b.id !== id) : [],
+        Array.isArray(prev) ? prev.filter((b) => b.id !== id) : []
       );
     } catch (err) {
       setError(err.message);
@@ -132,7 +131,7 @@ export const useAdmin = () => {
       setBookings((prev) =>
         Array.isArray(prev)
           ? prev.map((b) => (b.id === id ? updated : b))
-          : [updated],
+          : [updated]
       );
       return updated;
     } catch (err) {
@@ -147,6 +146,7 @@ export const useAdmin = () => {
     setEditDate(booking.fecha_agenda || "");
     setEditTime(booking.hora_agenda || "");
     setEditStatus(booking.status);
+    setError(null); // Limpiar errores al abrir el modal
     if (
       booking.status === "resuelto" &&
       booking.ganancia !== undefined &&
@@ -166,11 +166,13 @@ export const useAdmin = () => {
     setShowEditModal(false);
     setEditingBooking(null);
     setSaveSuccess(false);
+    setError(null); // Limpiar errores al cerrar
   }, []);
 
   const handleStatusChange = useCallback(
     (newStatus) => {
       setEditStatus(newStatus);
+      setError(null); // Limpiar errores al cambiar estado
       if (newStatus === "resuelto" && editingBooking) {
         const currentEarnings = editingBooking.ganancia;
         setEditEarnings(currentEarnings ? currentEarnings.toString() : "");
@@ -180,38 +182,44 @@ export const useAdmin = () => {
         setEditMotivo("");
       }
     },
-    [editingBooking],
+    [editingBooking]
   );
 
   const handleEditSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      setError(null); // ✅ Limpiar errores antes de validar
+
       if (!editStatus) return;
 
       // Validaciones
       if (editStatus === "agendado" && (!editDate || !editTime)) {
-        alert("Para agendar, debes seleccionar fecha y hora.");
+        setError("Para agendar, debes seleccionar fecha y hora.");
         return;
       }
 
       if (editStatus === "resuelto") {
-        const parsed = parseFloat(editEarnings);
-        if (isNaN(parsed) || parsed < 0) {
-          alert("Por favor ingresa una ganancia válida (número positivo).");
+        // ✅ CORRECCIÓN SONARCLOUD: Uso de Number.parseFloat
+        const parsed = Number.parseFloat(editEarnings);
+        if (Number.isNaN(parsed) || parsed < 0) {
+          setError("Por favor ingresa una ganancia válida (número positivo).");
           return;
         }
         if (!editMotivo.trim()) {
-          alert("Debes ingresar el motivo del cobro.");
+          setError("Debes ingresar el motivo del cobro.");
           return;
         }
       }
 
-      // ✅ CORRECCIÓN: Mantener la fecha de agenda si ya existía para no perder el historial
+      // Preparar payload
       const payload = {
         status: editStatus,
-        fecha_agenda: editStatus === "agendado" ? editDate : editingBooking.fecha_agenda,
-        hora_agenda: editStatus === "agendado" ? editTime : editingBooking.hora_agenda,
-        ganancia: editStatus === "resuelto" ? parseFloat(editEarnings) : null,
+        fecha_agenda:
+          editStatus === "agendado" ? editDate : editingBooking.fecha_agenda,
+        hora_agenda:
+          editStatus === "agendado" ? editTime : editingBooking.hora_agenda,
+        // ✅ CORRECCIÓN SONARCLOUD: Uso de Number.parseFloat aquí también
+        ganancia: editStatus === "resuelto" ? Number.parseFloat(editEarnings) : null,
         motivo_cobro: editStatus === "resuelto" ? editMotivo.trim() : "",
       };
 
@@ -220,12 +228,12 @@ export const useAdmin = () => {
         setBookings((prev) =>
           Array.isArray(prev)
             ? prev.map((b) => (b.id === editingBooking.id ? updated : b))
-            : [updated],
+            : [updated]
         );
         setSaveSuccess(true);
         setTimeout(closeEditModal, 1500);
       } catch (err) {
-        alert("Error al guardar cambios: " + err.message);
+        setError("Error al guardar cambios: " + err.message);
       }
     },
     [
@@ -236,43 +244,21 @@ export const useAdmin = () => {
       editEarnings,
       editMotivo,
       closeEditModal,
-    ],
+    ]
   );
 
   // ----- Handlers para el modal de evidencia -----
-  const openEvidenciaModal = useCallback((evidenciaPayload) => {
-    if (evidenciaPayload && typeof evidenciaPayload === "object") {
-      if (evidenciaPayload.evidenciaData !== undefined) {
-        setEvidenciaData(evidenciaPayload.evidenciaData);
-        setEvidenciaNombre(evidenciaPayload.evidenciaNombre || "Sin nombre");
-        setEvidenciaTipo(evidenciaPayload.evidenciaTipo || "");
-      } else if (evidenciaPayload.evidenciaUrl !== undefined) {
-        setEvidenciaData(evidenciaPayload.evidenciaUrl);
-        setEvidenciaNombre(
-          evidenciaPayload.evidenciaNombre ||
-            (evidenciaPayload.evidenciaUrl
-              ? evidenciaPayload.evidenciaUrl.split("/").pop()
-              : "Sin nombre"),
-        );
-        setEvidenciaTipo(evidenciaPayload.evidenciaTipo || "");
-      } else if (evidenciaPayload.id) {
-        const url =
-          evidenciaPayload.evidenciaData ||
-          evidenciaPayload.evidenciaUrl ||
-          evidenciaPayload.evidencia ||
-          null;
-        const nombre =
-          evidenciaPayload.evidenciaNombre ||
-          (url ? url.split("/").pop() : "Sin nombre");
-        const tipo = evidenciaPayload.evidenciaTipo || "";
-        setEvidenciaData(url);
-        setEvidenciaNombre(nombre);
-        setEvidenciaTipo(tipo);
-      } else {
-        setEvidenciaData(null);
-        setEvidenciaNombre("Sin nombre");
-        setEvidenciaTipo("");
-      }
+  const openEvidenciaModal = useCallback((payload) => {
+    if (payload && typeof payload === "object") {
+      // ✅ Optimización de código para evitar duplicación
+      const url =
+        payload.evidenciaData || payload.evidenciaUrl || payload.evidencia || null;
+      const nombre = payload.evidenciaNombre || (url ? url.split("/").pop() : "Sin nombre");
+      const tipo = payload.evidenciaTipo || "";
+
+      setEvidenciaData(url);
+      setEvidenciaNombre(nombre);
+      setEvidenciaTipo(tipo);
     } else {
       setEvidenciaData(null);
       setEvidenciaNombre("Sin nombre");
@@ -294,7 +280,7 @@ export const useAdmin = () => {
 
   const bookingsArray = useMemo(
     () => (Array.isArray(bookings) ? bookings : []),
-    [bookings],
+    [bookings]
   );
 
   const pendingBookings = useMemo(() => {
@@ -320,12 +306,12 @@ export const useAdmin = () => {
   // ✅ CORRECCIÓN: Uso de fecha de agenda o, si no existe, la fecha de actualización
   const earningsData = useMemo(() => {
     const resueltos = bookingsArray.filter((b) => b.status === "resuelto");
-    
+
     // Función auxiliar para obtener la mejor fecha de referencia para el cobro
     const getEarningDate = (b) => {
       if (b.fecha_agenda) return b.fecha_agenda;
-      if (b.updated_at) return b.updated_at.split('T')[0]; // Fecha en que se resolvió
-      return b.created_at ? b.created_at.split('T')[0] : todayStr;
+      if (b.updated_at) return b.updated_at.split("T")[0]; // Fecha en que se resolvió
+      return b.created_at ? b.created_at.split("T")[0] : todayStr;
     };
 
     const todayEarnings = resueltos
@@ -352,7 +338,7 @@ export const useAdmin = () => {
 
     const totalEarnings = resueltos.reduce(
       (sum, b) => sum + Number(b.ganancia || 0),
-      0,
+      0
     );
 
     return { todayEarnings, weekEarnings, monthEarnings, totalEarnings };
@@ -386,7 +372,7 @@ export const useAdmin = () => {
       if (view === "month") {
         const dateStr = format(date, "yyyy-MM-dd");
         const dayBookings = bookingsArray.filter(
-          (b) => b.fecha_agenda === dateStr,
+          (b) => b.fecha_agenda === dateStr
         );
         if (dayBookings.length > 0) {
           return (
@@ -398,7 +384,7 @@ export const useAdmin = () => {
       }
       return null;
     },
-    [bookingsArray],
+    [bookingsArray]
   );
 
   // ----- Retorno -----
@@ -451,4 +437,4 @@ export const useAdmin = () => {
     openEvidenciaModal,
     closeEvidenciaModal,
   };
-};
+};  
