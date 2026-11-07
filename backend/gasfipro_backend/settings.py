@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nw4aum5u9s!zb&=c^sa!(ult8+%iv@6_8*z%-i_@t%%rpc5hg_'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 
 
 ALLOWED_HOSTS = ['*']  # Para desarrollo, puedes poner '*' o 'localhost'.
 
@@ -188,9 +188,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'OAUTH_PKCE_ENABLED': True,
         'APPS': [
             {
-                'client_id': os.getenv('GOOGLE_CLIENT_ID', '129169394896-kbkqsaqoa29nkqek35pc315kb19eae1c.apps.googleusercontent.com'),
+                'client_id': os.getenv('GOOGLE_CLIENT_ID', ''),
                 # ✅ CORREGIDO: Se ha cambiado la 'y' por la 't' en el secreto
-                'secret': os.getenv('GOOGLE_CLIENT_SECRET', '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'),
+                'secret': os.getenv(''),
                 'key': '',
             },
         ],
